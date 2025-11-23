@@ -1,0 +1,5 @@
+{
+  "name": "HPC Topology Architect",
+  "description": "A high-performance computing network topology calculator and visualizer designed for AI cluster planning.",
+  "requestFramePermissions": []
+}
