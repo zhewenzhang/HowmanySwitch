@@ -1,7 +1,7 @@
 
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Server, Box, CircuitBoard, Cpu } from 'lucide-react';
+import { Server, Box, CircuitBoard, Cpu, Layers, Grid } from 'lucide-react';
 
 interface NodeLabels {
     ftswLayer: string;
@@ -11,16 +11,46 @@ interface NodeLabels {
     spineSwitchSubtitle: string;
 }
 
-// --- Spine Switch Node ---
-export const SpineNode = memo(({ data }: { data: { label: string; labels: NodeLabels } }) => {
+interface SpineNodeData {
+  label: string;
+  labels: NodeLabels;
+  chipCount: number;
+  subLabels: {
+    contains: string;
+    chips: string;
+    approx: string;
+  }
+}
+
+// --- Spine Switch Group Node ---
+export const SpineNode = memo(({ data }: { data: SpineNodeData }) => {
   return (
-    <div className="px-4 py-3 shadow-[0_0_25px_rgba(168,85,247,0.3)] rounded-lg bg-slate-950/90 backdrop-blur-md border border-purple-500/50 min-w-[160px] group hover:border-purple-400 transition-colors">
+    <div className="px-4 py-3 shadow-[0_0_25px_rgba(168,85,247,0.2)] rounded-lg bg-slate-950/90 backdrop-blur-md border border-dashed border-purple-500/60 min-w-[180px] group hover:border-purple-400 transition-colors relative">
+       {/* Visual Stack Effect to imply 'Group' */}
+       <div className="absolute -top-1 left-1.5 right-1.5 h-full bg-purple-500/10 rounded-lg -z-10 border-t border-purple-500/30"></div>
+       <div className="absolute -top-2 left-3 right-3 h-full bg-purple-500/5 rounded-lg -z-20 border-t border-purple-500/20"></div>
+
       <div className="flex flex-col items-center relative z-10">
-        <div className="bg-purple-500/10 p-2 rounded-full mb-2 group-hover:bg-purple-500/20 transition-colors">
-           <Server size={20} className="text-purple-400" />
+        <div className="bg-purple-500/10 p-2 rounded-lg mb-2 group-hover:bg-purple-500/20 transition-colors border border-purple-500/20">
+           {/* Stacked Icon */}
+           <Layers size={24} className="text-purple-400" />
         </div>
-        <div className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-0.5">{data.labels.spineSwitchSubtitle}</div>
-        <div className="text-purple-200 font-mono text-sm font-bold">{data.label}</div>
+        
+        {/* Top Subtitle (Type) */}
+        <div className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-0.5">
+            {data.labels.spineSwitchSubtitle}
+        </div>
+        
+        {/* Main Label (Plane ID) */}
+        <div className="text-purple-200 font-mono text-sm font-bold mb-2">{data.label}</div>
+        
+        {/* Count Badge */}
+        <div className="flex items-center gap-1.5 bg-purple-950/80 border border-purple-400/40 px-2 py-1 rounded text-[10px] font-mono text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.1)]">
+            <Grid size={10} className="text-purple-400" />
+            <span>
+                {data.subLabels.contains} <span className="text-white font-bold">{data.subLabels.approx}{data.chipCount}</span> {data.subLabels.chips}
+            </span>
+        </div>
       </div>
       <Handle
         type="source"

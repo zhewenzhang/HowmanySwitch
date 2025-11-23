@@ -35,9 +35,9 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
     const newEdges: Edge[] = [];
 
     const spineY = 50;
-    const l1Y = 300;
+    const l1Y = 320;
     const centerX = 600;
-    const spineSpacing = 200;
+    const spineSpacing = 220;
     const l1Spacing = 320;
 
     const labels = {
@@ -55,8 +55,10 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
         ftswPerL1: stats.ftswPerL1
     };
 
-    // 1. Generate Spine Nodes (Representative set of 3-5)
+    // 1. Generate Spine Nodes (Representative set of 3 Groups)
     const spineCount = 3; 
+    const chipsPerSpineGroup = Math.ceil(stats.totalStswChips / spineCount);
+
     for (let i = 0; i < spineCount; i++) {
       const id = `spine-${i}`;
       const xOffset = (i - (spineCount - 1) / 2) * spineSpacing;
@@ -64,10 +66,16 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
       newNodes.push({
         id,
         type: 'spineNode',
-        position: { x: centerX + xOffset - 75, y: spineY }, // -75 center align (width 150)
+        position: { x: centerX + xOffset - 90, y: spineY }, // -90 center align (width ~180)
         data: { 
-            label: `${t.spineLayer} ${i + 1}`,
-            labels
+            label: `${t.spineLayer} #${i + 1}`,
+            labels,
+            chipCount: chipsPerSpineGroup,
+            subLabels: {
+                contains: t.contains,
+                chips: t.chips,
+                approx: t.approx
+            }
         },
       });
     }
@@ -83,7 +91,7 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
       newNodes.push({
         id,
         type: 'l1Node',
-        position: { x: centerX + xOffset - 140, y: l1Y }, // -140 center align (width 280)
+        position: { x: centerX + xOffset - 160, y: l1Y }, // -160 center align (width 320)
         data: { 
             label, 
             topology: topologyData, // Pass derived topology
@@ -98,7 +106,7 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
             source: `spine-${j}`,
             target: id,
             animated: true,
-            style: { stroke: '#4ade80', strokeWidth: 1.5, opacity: 0.6 },
+            style: { stroke: '#a855f7', strokeWidth: 1, opacity: 0.4 }, // Purple tinted lines
             type: 'default',
          });
       }
@@ -110,7 +118,7 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
 
   return (
     <div className="w-full h-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
-        <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-slate-900/80 border border-slate-700 rounded text-xs text-slate-400 backdrop-blur pointer-events-none">
+        <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-slate-900/80 border border-slate-700 rounded text-xs text-slate-400 backdrop-blur pointer-events-none font-mono">
             {t.repView}
         </div>
       <ReactFlow
@@ -125,7 +133,7 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, st
         minZoom={0.1}
         maxZoom={1.5}
       >
-        <Background color="#1e293b" gap={20} size={1} />
+        <Background color="#1e293b" gap={24} size={1} />
         <Controls 
             className="bg-slate-800 border border-slate-700 text-slate-200 fill-slate-200" 
         />

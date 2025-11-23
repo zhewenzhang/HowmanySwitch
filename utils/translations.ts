@@ -32,13 +32,16 @@ export const TRANSLATIONS = {
 
     // Visualizer
     repView: 'Representative Logical View',
-    spineLayer: 'STSW Plane',
+    spineLayer: 'STSW Group', // Changed to Group
     l1Unit: 'L1 Unit',
     ftswLayer: 'FTSW Layer',
     rtswLayer: 'RTSW Layer',
     compute: 'Compute',
     gpus: 'GPUs',
-    spineSwitchSubtitle: 'Spine Switch'
+    spineSwitchSubtitle: 'Switch Aggregate', // Changed subtitle
+    contains: 'Contains',
+    chips: 'Chips',
+    approx: '~'
   },
   zh: {
     appTitle: 'HPC.网络架构师',
@@ -70,12 +73,15 @@ export const TRANSLATIONS = {
 
     // Visualizer
     repView: '逻辑拓扑概览',
-    spineLayer: 'STSW 平面',
+    spineLayer: 'STSW 交换平面',
     l1Unit: 'L1 单元',
     ftswLayer: 'FTSW 层',
     rtswLayer: 'RTSW 层',
     compute: '计算节点',
     gpus: 'GPU',
-    spineSwitchSubtitle: '脊交换机'
+    spineSwitchSubtitle: '交换机聚合组',
+    contains: '包含',
+    chips: '芯片',
+    approx: '约'
   }
 };
