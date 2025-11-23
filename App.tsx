@@ -42,7 +42,8 @@ const App: React.FC = () => {
       {/* Sidebar */}
       <aside className="z-20 shadow-xl">
         <ControlPanel 
-            config={config} 
+            config={config}
+            stats={stats}
             onChange={setConfig} 
             onReset={handleReset}
             onExport={handleExport}
@@ -92,7 +93,7 @@ const App: React.FC = () => {
            {/* Visualizer Container */}
            <div className="flex-1 relative rounded-xl border border-slate-800 shadow-2xl overflow-hidden group">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent z-10 opacity-50"></div>
-              <NetworkVisualizer config={config} lang={lang} />
+              <NetworkVisualizer config={config} stats={stats} lang={lang} />
            </div>
         </div>
       </main>

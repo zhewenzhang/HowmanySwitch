@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { NetworkConfig } from '../types';
-import { Settings, RotateCcw, Download } from 'lucide-react';
+import { NetworkConfig, NetworkStats } from '../types';
+import { Settings, RotateCcw, Download, Lock } from 'lucide-react';
 import { Language, TRANSLATIONS } from '../utils/translations';
 
 interface ControlPanelProps {
   config: NetworkConfig;
+  stats: NetworkStats;
   onChange: (newConfig: NetworkConfig) => void;
   onReset: () => void;
   onExport: () => void;
@@ -52,7 +53,31 @@ const InputGroup: React.FC<{
   </div>
 );
 
-export const ControlPanel: React.FC<ControlPanelProps> = ({ config, onChange, onReset, onExport, lang }) => {
+const ReadOnlyGroup: React.FC<{
+    label: string;
+    value: number;
+    description?: string;
+}> = ({ label, value, description }) => (
+    <div className="mb-6 opacity-90">
+        <div className="flex justify-between items-center mb-2">
+            <label className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                {label}
+            </label>
+            <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-700 bg-slate-900/30">
+                    <Lock size={10} className="text-slate-500" />
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Auto</span>
+                </div>
+                <div className="w-24 bg-slate-900/50 border border-slate-700 text-blue-300 font-mono text-sm rounded px-3 py-1 text-right cursor-not-allowed shadow-inner">
+                    {value}
+                </div>
+            </div>
+        </div>
+        {description && <p className="text-xs text-slate-600 mt-1 leading-tight">{description}</p>}
+    </div>
+);
+
+export const ControlPanel: React.FC<ControlPanelProps> = ({ config, stats, onChange, onReset, onExport, lang }) => {
   const t = TRANSLATIONS[lang];
   
   const updateConfig = (key: keyof NetworkConfig, value: number) => {
@@ -79,30 +104,27 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ config, onChange, on
         <InputGroup
           label={t.gpusPerL1}
           value={config.gpusPerL1}
-          min={8}
-          max={512}
-          step={8}
+          min={24}
+          max={576}
+          step={24}
           onChange={(v) => updateConfig('gpusPerL1', v)}
           description={t.gpusPerL1Desc}
         />
 
-        <InputGroup
-          label={t.rtswPerL1}
-          value={config.rtswPerL1}
-          min={1}
-          max={32}
-          onChange={(v) => updateConfig('rtswPerL1', v)}
-          description={t.rtswPerL1Desc}
-        />
+        {/* Read Only / Calculated Fields */}
+        <div className="my-6 pt-2 pb-2 border-t border-b border-slate-800/50 bg-slate-900/20 -mx-6 px-6">
+            <ReadOnlyGroup
+                label={t.rtswPerL1}
+                value={stats.rtswPerL1}
+                description={t.rtswPerL1Desc}
+            />
 
-        <InputGroup
-          label={t.ftswPerL1}
-          value={config.ftswPerL1}
-          min={1}
-          max={32}
-          onChange={(v) => updateConfig('ftswPerL1', v)}
-          description={t.ftswPerL1Desc}
-        />
+            <ReadOnlyGroup
+                label={t.ftswPerL1}
+                value={stats.ftswPerL1}
+                description={t.ftswPerL1Desc}
+            />
+        </div>
 
         <InputGroup
           label={t.stswRatio}

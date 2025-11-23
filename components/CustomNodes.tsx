@@ -32,8 +32,9 @@ export const SpineNode = memo(({ data }: { data: { label: string; labels: NodeLa
 });
 
 // --- L1 Rack/Unit Node (Internal Topology) ---
-export const L1GroupNode = memo(({ data }: { data: { label: string; config: any; labels: NodeLabels } }) => {
-  const { gpusPerL1, rtswPerL1, ftswPerL1 } = data.config;
+export const L1GroupNode = memo(({ data }: { data: { label: string; topology: any; labels: NodeLabels } }) => {
+  // Destructure from the 'topology' object we passed in NetworkVisualizer
+  const { gpusPerL1, rtswPerL1, ftswPerL1 } = data.topology;
   const { ftswLayer, rtswLayer, compute, gpus } = data.labels;
 
   // Helper to generate small chip indicators

@@ -10,11 +10,12 @@ import ReactFlow, {
   ConnectionMode,
 } from 'reactflow';
 import { SpineNode, L1GroupNode } from './CustomNodes';
-import { NetworkConfig } from '../types';
+import { NetworkConfig, NetworkStats } from '../types';
 import { Language, TRANSLATIONS } from '../utils/translations';
 
 interface NetworkVisualizerProps {
   config: NetworkConfig;
+  stats: NetworkStats;
   lang: Language;
 }
 
@@ -23,17 +24,13 @@ const nodeTypes = {
   l1Node: L1GroupNode,
 };
 
-export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, lang }) => {
+export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, stats, lang }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const t = TRANSLATIONS[lang];
 
   // Recalculate layout when config changes or language changes
   useEffect(() => {
-    // Representative Visualization Strategy
-    // Top Row: Spine Group (Representative)
-    // Bottom Row: L1 Units (3 representative units)
-
     const newNodes: Node[] = [];
     const newEdges: Edge[] = [];
 
@@ -49,6 +46,13 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, la
         compute: t.compute,
         gpus: t.gpus,
         spineSwitchSubtitle: t.spineSwitchSubtitle
+    };
+
+    // Combined Topology Data for Nodes
+    const topologyData = {
+        gpusPerL1: config.gpusPerL1,
+        rtswPerL1: stats.rtswPerL1,
+        ftswPerL1: stats.ftswPerL1
     };
 
     // 1. Generate Spine Nodes (Representative set of 3-5)
@@ -82,14 +86,12 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, la
         position: { x: centerX + xOffset - 140, y: l1Y }, // -140 center align (width 280)
         data: { 
             label, 
-            config,
+            topology: topologyData, // Pass derived topology
             labels
         },
       });
 
       // 3. Create Edges
-      // Full mesh representation: Connect every spine node to every L1 node
-      // Use animated green lines
       for (let j = 0; j < spineCount; j++) {
          newEdges.push({
             id: `e-s${j}-l${i}`,
@@ -104,7 +106,7 @@ export const NetworkVisualizer: React.FC<NetworkVisualizerProps> = ({ config, la
 
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [config, lang, setNodes, setEdges]); // Added lang dependency
+  }, [config, stats, lang, setNodes, setEdges]);
 
   return (
     <div className="w-full h-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
